@@ -636,8 +636,6 @@ namespace Mugnum.FFmpegLauncher.Forms
 			}
 		}
 
-		#endregion Methods: Event handlers
-
 		/// <summary>
 		/// Opens dialog for selecting first input file.
 		/// </summary>
@@ -675,5 +673,7 @@ namespace Mugnum.FFmpegLauncher.Forms
 
 			BrowseOutputFile();
 		}
+
+		#endregion Methods: Event handlers
 	}
 }

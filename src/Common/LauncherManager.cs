@@ -1,4 +1,5 @@
 ﻿using Mugnum.FFmpegLauncher.Entities;
+using Mugnum.FFmpegLauncher.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,7 +13,7 @@ namespace Mugnum.FFmpegLauncher.Common
 	/// <summary>
 	/// FFmpeg launcher manager.
 	/// </summary>
-	internal class LauncherManager
+	internal partial class LauncherManager
 	{
 		#region Constants and fields
 
@@ -31,6 +32,13 @@ namespace Mugnum.FFmpegLauncher.Common
 		/// </summary>
 		private bool _isQueueBusy;
 
+		/// <summary>
+		/// New line detection regex pattern.
+		/// </summary>
+		/// <returns> Regex pattern for new line. </returns>
+		[GeneratedRegex(@"\r\n?|\n")]
+		private static partial Regex NewLineRegex();
+
 		#endregion Constants and fields
 
 		#region Properties and events
@@ -38,7 +46,7 @@ namespace Mugnum.FFmpegLauncher.Common
 		/// <summary>
 		/// Command queue.
 		/// </summary>
-		private Queue<Command> CommandsQueue { get; } = new Queue<Command>();
+		private Queue<Command> CommandsQueue { get; } = new ();
 
 		/// <summary>
 		/// Handler for command execution.
@@ -101,7 +109,7 @@ namespace Mugnum.FFmpegLauncher.Common
 		{
 			// TODO: At the moment, this may skip active queue item when mixing modes.
 
-			if (CommandsQueue.Any())
+			if (!CommandsQueue.IsEmpty())
 			{
 				_ = ExecuteCommand(CommandsQueue.Dequeue());
 			}
@@ -115,6 +123,8 @@ namespace Mugnum.FFmpegLauncher.Common
 		/// <exception cref="ArgumentNullException"></exception>
 		private async Task ExecuteCommand(Command command, bool isQueued = false)
 		{
+			const string NoFfmpegMacro = $"{{{LauncherConstants.NoFfmpeg}}}";
+
 			_ = command ?? throw new ArgumentNullException(nameof(command));
 			_isQueueBusy = true;
 
@@ -127,14 +137,13 @@ namespace Mugnum.FFmpegLauncher.Common
 			var outputFilePath = command.OutputFileParameter?.FilePath?.Trim() ?? string.Empty;
 
 			// Replace newlines with spaces.
-			firstParams = Regex.Replace(firstParams, @"\r\n?|\n", " ");
-			secondParams = Regex.Replace(secondParams, @"\r\n?|\n", " ");
-			outputParams = Regex.Replace(outputParams, @"\r\n?|\n", " ");
-			var noFfmpegMacro = $"{{{LauncherConstants.NoFfmpeg}}}";
+			firstParams = NewLineRegex().Replace(firstParams, " ");
+			secondParams = NewLineRegex().Replace(secondParams, " ");
+			outputParams = NewLineRegex().Replace(outputParams, " ");
 
-			if (!firstParams.Contains(noFfmpegMacro)
-				&& !secondParams.Contains(noFfmpegMacro)
-				&& !outputParams.Contains(noFfmpegMacro))
+			if (!firstParams.Contains(NoFfmpegMacro)
+				&& !secondParams.Contains(NoFfmpegMacro)
+				&& !outputParams.Contains(NoFfmpegMacro))
 			{
 				builder.Append($" {ExecutablePath}");
 			}
@@ -182,15 +191,19 @@ namespace Mugnum.FFmpegLauncher.Common
 
 			// Close console on finish and continue queue processing.
 			if (command.IsClosingOnFinish
-				|| (isQueued && CommandsQueue.Any()))
+				|| (isQueued && !CommandsQueue.IsEmpty()))
 			{
 				cmdText += " & exit";
 			}
 
 			var process = Process.Start(ConsoleApplication, $"/k {cmdText}");
-			await process.WaitForExitAsync();
-			_isQueueBusy = CommandsQueue.Any();
 
+			if (process != null)
+			{
+				await process.WaitForExitAsync();
+			}
+
+			_isQueueBusy = !CommandsQueue.IsEmpty();
 			CommandExecuted?.Invoke(this, new CommandEventArgs(outputFilePath));
 		}
 
@@ -204,7 +217,7 @@ namespace Mugnum.FFmpegLauncher.Common
 		private static string FilterOutKeywords(string text, params string[] keywords)
 		{
 			if (string.IsNullOrEmpty(text)
-				|| keywords == null || !keywords.Any())
+				|| keywords == null || keywords.Length == 0)
 			{
 				return text;
 			}

@@ -1,5 +1,6 @@
 ﻿using Mugnum.FFmpegLauncher.Forms;
 using System;
+using System.Runtime.Versioning;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -8,6 +9,7 @@ namespace Mugnum.FFmpegLauncher
 	/// <summary>
 	/// FFmpeg launcher main program.
 	/// </summary>
+	[SupportedOSPlatform("windows")]
 	internal static class Program
 	{
 		/// <summary>

@@ -29,84 +29,89 @@
 		private void InitializeComponent()
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditPresetForm));
-			this.OverrideExistingCheckbox = new System.Windows.Forms.CheckBox();
-			this.CancelButton = new System.Windows.Forms.Button();
-			this.AddButton = new System.Windows.Forms.Button();
-			this.PresetNameLabel = new System.Windows.Forms.Label();
-			this.PresetNameTextBox = new System.Windows.Forms.TextBox();
-			this.SuspendLayout();
+			OverrideExistingCheckbox = new System.Windows.Forms.CheckBox();
+			CancelButton = new System.Windows.Forms.Button();
+			AddButton = new System.Windows.Forms.Button();
+			PresetNameLabel = new System.Windows.Forms.Label();
+			PresetNameTextBox = new System.Windows.Forms.TextBox();
+			SuspendLayout();
 			// 
 			// OverrideExistingCheckbox
 			// 
-			this.OverrideExistingCheckbox.AutoSize = true;
-			this.OverrideExistingCheckbox.Checked = true;
-			this.OverrideExistingCheckbox.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.OverrideExistingCheckbox.Location = new System.Drawing.Point(12, 62);
-			this.OverrideExistingCheckbox.Name = "OverrideExistingCheckbox";
-			this.OverrideExistingCheckbox.Size = new System.Drawing.Size(104, 17);
-			this.OverrideExistingCheckbox.TabIndex = 9;
-			this.OverrideExistingCheckbox.Text = "Override existing";
-			this.OverrideExistingCheckbox.UseVisualStyleBackColor = true;
+			OverrideExistingCheckbox.AutoSize = true;
+			OverrideExistingCheckbox.Checked = true;
+			OverrideExistingCheckbox.CheckState = System.Windows.Forms.CheckState.Checked;
+			OverrideExistingCheckbox.Location = new System.Drawing.Point(12, 62);
+			OverrideExistingCheckbox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+			OverrideExistingCheckbox.Name = "OverrideExistingCheckbox";
+			OverrideExistingCheckbox.Size = new System.Drawing.Size(115, 19);
+			OverrideExistingCheckbox.TabIndex = 9;
+			OverrideExistingCheckbox.Text = "Override existing";
+			OverrideExistingCheckbox.UseVisualStyleBackColor = true;
+			OverrideExistingCheckbox.CheckedChanged += OverrideExistingCheckbox_CheckedChanged;
 			// 
 			// CancelButton
 			// 
-			this.CancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.CancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.CancelButton.Location = new System.Drawing.Point(274, 56);
-			this.CancelButton.Name = "CancelButton";
-			this.CancelButton.Size = new System.Drawing.Size(75, 23);
-			this.CancelButton.TabIndex = 8;
-			this.CancelButton.Text = "Cancel";
-			this.CancelButton.UseVisualStyleBackColor = true;
+			CancelButton.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+			CancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			CancelButton.Location = new System.Drawing.Point(274, 56);
+			CancelButton.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+			CancelButton.Name = "CancelButton";
+			CancelButton.Size = new System.Drawing.Size(75, 23);
+			CancelButton.TabIndex = 8;
+			CancelButton.Text = "Cancel";
+			CancelButton.UseVisualStyleBackColor = true;
 			// 
 			// AddButton
 			// 
-			this.AddButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.AddButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.AddButton.Location = new System.Drawing.Point(274, 27);
-			this.AddButton.Name = "AddButton";
-			this.AddButton.Size = new System.Drawing.Size(75, 23);
-			this.AddButton.TabIndex = 7;
-			this.AddButton.Text = "Add";
-			this.AddButton.UseVisualStyleBackColor = true;
-			this.AddButton.Click += new System.EventHandler(this.AddButton_Click);
+			AddButton.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+			AddButton.DialogResult = System.Windows.Forms.DialogResult.OK;
+			AddButton.Location = new System.Drawing.Point(274, 27);
+			AddButton.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+			AddButton.Name = "AddButton";
+			AddButton.Size = new System.Drawing.Size(75, 23);
+			AddButton.TabIndex = 7;
+			AddButton.Text = "Add";
+			AddButton.UseVisualStyleBackColor = true;
+			AddButton.Click += AddButton_Click;
 			// 
 			// PresetNameLabel
 			// 
-			this.PresetNameLabel.AutoSize = true;
-			this.PresetNameLabel.Location = new System.Drawing.Point(9, 13);
-			this.PresetNameLabel.Name = "PresetNameLabel";
-			this.PresetNameLabel.Size = new System.Drawing.Size(38, 13);
-			this.PresetNameLabel.TabIndex = 6;
-			this.PresetNameLabel.Text = "Name:";
+			PresetNameLabel.AutoSize = true;
+			PresetNameLabel.Location = new System.Drawing.Point(9, 13);
+			PresetNameLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			PresetNameLabel.Name = "PresetNameLabel";
+			PresetNameLabel.Size = new System.Drawing.Size(42, 15);
+			PresetNameLabel.TabIndex = 6;
+			PresetNameLabel.Text = "Name:";
 			// 
 			// PresetNameTextBox
 			// 
-			this.PresetNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.PresetNameTextBox.Location = new System.Drawing.Point(12, 29);
-			this.PresetNameTextBox.MaxLength = 256;
-			this.PresetNameTextBox.Name = "PresetNameTextBox";
-			this.PresetNameTextBox.Size = new System.Drawing.Size(243, 20);
-			this.PresetNameTextBox.TabIndex = 5;
+			PresetNameTextBox.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+			PresetNameTextBox.Location = new System.Drawing.Point(12, 29);
+			PresetNameTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+			PresetNameTextBox.MaxLength = 256;
+			PresetNameTextBox.Name = "PresetNameTextBox";
+			PresetNameTextBox.Size = new System.Drawing.Size(243, 23);
+			PresetNameTextBox.TabIndex = 5;
 			// 
 			// EditPresetForm
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(359, 93);
-			this.Controls.Add(this.OverrideExistingCheckbox);
-			this.Controls.Add(this.CancelButton);
-			this.Controls.Add(this.AddButton);
-			this.Controls.Add(this.PresetNameLabel);
-			this.Controls.Add(this.PresetNameTextBox);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.Name = "EditPresetForm";
-			this.Text = "FFmpeg Launcher: New preset";
-			this.TopMost = true;
-			this.ResumeLayout(false);
-			this.PerformLayout();
-
+			AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+			AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			ClientSize = new System.Drawing.Size(359, 93);
+			Controls.Add(OverrideExistingCheckbox);
+			Controls.Add(CancelButton);
+			Controls.Add(AddButton);
+			Controls.Add(PresetNameLabel);
+			Controls.Add(PresetNameTextBox);
+			Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
+			Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+			Name = "EditPresetForm";
+			Text = "FFmpeg Launcher: New preset";
+			TopMost = true;
+			ResumeLayout(false);
+			PerformLayout();
 		}
 
 		#endregion

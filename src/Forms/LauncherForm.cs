@@ -1,13 +1,15 @@
 ﻿using Microsoft.WindowsAPICodePack.Dialogs;
 using Mugnum.FFmpegLauncher.Common;
 using Mugnum.FFmpegLauncher.Entities;
-using Newtonsoft.Json;
+using Mugnum.FFmpegLauncher.Extensions;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Versioning;
 using System.Text.RegularExpressions;
+using System.Text.Json;
 using System.Windows.Forms;
 
 namespace Mugnum.FFmpegLauncher.Forms
@@ -15,11 +17,12 @@ namespace Mugnum.FFmpegLauncher.Forms
 	/// <summary>
 	/// FFmpeg launcher form.
 	/// </summary>
+	[SupportedOSPlatform("windows")]
 	public partial class LauncherForm : Form
 	{
 		// TODO: Add drag-and-drop for files.
 		// TODO: Add macros in GUI.
-
+		
 		#region Constants and fields
 
 		/// <summary>
@@ -40,7 +43,7 @@ namespace Mugnum.FFmpegLauncher.Forms
 		/// <summary>
 		/// FFmpeg launcher manager.
 		/// </summary>
-		private readonly LauncherManager _launcherManager = new LauncherManager();
+		private readonly LauncherManager _launcherManager = new ();
 
 		/// <summary>
 		/// Settings configuration.
@@ -71,7 +74,7 @@ namespace Mugnum.FFmpegLauncher.Forms
 			try
 			{
 				var configJson = File.ReadAllText(_configFileName);
-				_config = JsonConvert.DeserializeObject<SettingsConfiguration>(configJson);
+				_config = JsonSerializer.Deserialize<SettingsConfiguration>(configJson);
 			}
 			catch (Exception)
 			{
@@ -118,7 +121,7 @@ namespace Mugnum.FFmpegLauncher.Forms
 			FirstFilePathTextBox.Text = _config.DefaultPath;
 			OutputFilePathTextBox.Text = _config.DefaultPath;
 
-			if (_config.Presets != null && _config.Presets.Any())
+			if (!_config.Presets.IsNullOrEmpty())
 			{
 				PresetList.Items.AddRange(_config.Presets.Cast<object>().ToArray());
 
@@ -144,7 +147,7 @@ namespace Mugnum.FFmpegLauncher.Forms
 				File.Copy(_configFileName, _backupConfigFileName, true);
 			}
 
-			var configJson = JsonConvert.SerializeObject(_config);
+			var configJson = JsonSerializer.Serialize(_config);
 			File.WriteAllText(_configFileName, configJson);
 		}
 
@@ -187,7 +190,7 @@ namespace Mugnum.FFmpegLauncher.Forms
 		{
 			try
 			{
-				var fileName = Path.GetFileName(OutputFilePathTextBox.Text ?? string.Empty);
+				var fileName = Path.GetFileName(OutputFilePathTextBox.Text);
 				return string.IsNullOrEmpty(fileName)
 					? LauncherConstants.UnknownName
 					: fileName;
@@ -201,16 +204,17 @@ namespace Mugnum.FFmpegLauncher.Forms
 		/// <summary>
 		/// Shows new preset creation dialog.
 		/// </summary>
-		/// <returns> Preset name or <see langword="null"/>. </returns>
+		/// <returns> Preset name (<see langword="null"/> - if canceled). </returns>
 		private string ShowNewPresetForm()
 		{
-			using (var form = new EditPresetForm(_config.IsOverridingExistingPreset))
-			{
-				form.StartPosition = FormStartPosition.CenterParent;
-				form.ExistingPresets = _config.Presets?.Select(p => p.Name).ToArray();
-				form.ShowDialog();
-				return form.PresetName;
-			}
+			using var form = new EditPresetForm();
+			form.IsOverridingExistingPreset = _config.IsOverridingExistingPreset;
+			form.StartPosition = FormStartPosition.CenterParent;
+			form.ExistingPresets = _config.Presets?.Select(p => p.Name).ToArray();
+			form.ShowDialog();
+
+			_config.IsOverridingExistingPreset = form.IsOverridingExistingPreset;
+			return form.PresetName;
 		}
 
 		/// <summary>
@@ -226,7 +230,7 @@ namespace Mugnum.FFmpegLauncher.Forms
 				return;
 			}
 
-			_config.Presets = _config.Presets ?? new List<Preset>();
+			_config.Presets ??= new List<Preset>();
 			_currentPreset = PreparePreset(presetName);
 
 			// Specifying StartIndex makes search case-insensitive.
@@ -336,23 +340,22 @@ namespace Mugnum.FFmpegLauncher.Forms
 		/// <param name="filter"> File selection filters. </param>
 		/// <param name="filterIndex"> Filter index. </param>
 		/// <exception cref="ArgumentNullException"></exception>
-		private void BrowseInputFile(Control targetControl, string title, string filter, int filterIndex)
+		private static void BrowseInputFile(Control targetControl, string title, string filter, int filterIndex)
 		{
 			_ = targetControl ?? throw new ArgumentNullException(nameof(targetControl));
-			using (var selectFileDialog = new OpenFileDialog())
+
+			using var selectFileDialog = new OpenFileDialog();
+			selectFileDialog.Filter = filter;
+			selectFileDialog.FilterIndex = filterIndex;
+			selectFileDialog.Title = title;
+			selectFileDialog.Multiselect = false;
+
+			if (selectFileDialog.ShowDialog() != DialogResult.OK)
 			{
-				selectFileDialog.Filter = filter;
-				selectFileDialog.FilterIndex = filterIndex;
-				selectFileDialog.Title = title;
-				selectFileDialog.Multiselect = false;
-
-				if (selectFileDialog.ShowDialog() != DialogResult.OK)
-				{
-					return;
-				}
-
-				targetControl.Text = selectFileDialog.FileName;
+				return;
 			}
+
+			targetControl.Text = selectFileDialog.FileName;
 		}
 
 		/// <summary>
@@ -368,22 +371,21 @@ namespace Mugnum.FFmpegLauncher.Forms
 			var fileExtension = $"|*.{preferredFormat}";
 			var filterFileExtensionIndex = Filter.IndexOf(fileExtension, StringComparison.InvariantCultureIgnoreCase);
 			var preferredFilter = filterFileExtensionIndex >= 0
-				? Filter.Substring(0, filterFileExtensionIndex + fileExtension.Length)
+				? Filter[..(filterFileExtensionIndex + fileExtension.Length)]
 				: Filter;
 
 			// If preferred format found, then use it's index, otherwise select last format "All files".
 			var filterIndex = preferredFilter.Split('|').Length / FilterGroupItemsCount;
-			using (var saveFileDialog = new SaveFileDialog())
-			{
-				saveFileDialog.Title = "Output file";
-				saveFileDialog.Filter = Filter;
-				saveFileDialog.FilterIndex = filterIndex;
-				saveFileDialog.DefaultExt = preferredFormat;
 
-				if (saveFileDialog.ShowDialog() == DialogResult.OK)
-				{
-					OutputFilePathTextBox.Text = saveFileDialog.FileName;
-				}
+			using var saveFileDialog = new SaveFileDialog();
+			saveFileDialog.Title = "Output file";
+			saveFileDialog.Filter = Filter;
+			saveFileDialog.FilterIndex = filterIndex;
+			saveFileDialog.DefaultExt = preferredFormat;
+
+			if (saveFileDialog.ShowDialog() == DialogResult.OK)
+			{
+				OutputFilePathTextBox.Text = saveFileDialog.FileName;
 			}
 		}
 
@@ -392,18 +394,16 @@ namespace Mugnum.FFmpegLauncher.Forms
 		/// </summary>
 		private void BrowseOutputDirectory()
 		{
-			using (var selectFolderDialog = new CommonOpenFileDialog())
+			using var selectFolderDialog = new CommonOpenFileDialog();
+			selectFolderDialog.Title = "Output folder";
+			selectFolderDialog.IsFolderPicker = true;
+
+			if (selectFolderDialog.ShowDialog() != CommonFileDialogResult.Ok)
 			{
-				selectFolderDialog.Title = "Output folder";
-				selectFolderDialog.IsFolderPicker = true;
-
-				if (selectFolderDialog.ShowDialog() != CommonFileDialogResult.Ok)
-				{
-					return;
-				}
-
-				OutputFilePathTextBox.Text = CopyFileName(FirstFilePathTextBox.Text, selectFolderDialog.FileName);
+				return;
 			}
+
+			OutputFilePathTextBox.Text = CopyFileName(FirstFilePathTextBox.Text, selectFolderDialog.FileName);
 		}
 
 		/// <summary>
@@ -610,15 +610,14 @@ namespace Mugnum.FFmpegLauncher.Forms
 		/// <param name="e"> Event arguments. </param>
 		private void PresetList_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			_config.Presets = _config.Presets ?? new List<Preset>();
 			_config.LastSelectedPresetIndex = PresetList.SelectedIndex;
-			_currentPreset = PresetList.SelectedIndex < ComboBoxMinValue || !_config.Presets.Any()
+			_currentPreset = PresetList.SelectedIndex < ComboBoxMinValue || _config.Presets.IsNullOrEmpty()
 				? null
 				: _config.Presets.Find(p => p.Name == PresetList.Text);
 
-			var firstInputParam = FirstInputParamTextBox.Text = _currentPreset?.FirstFileParameter.Parameters;
-			var secondInputParam = SecondInputParamTextBox.Text = _currentPreset?.SecondFileParameter.Parameters;
-			var outputParam = OutputParameterTextBox.Text = _currentPreset?.OutputFileParameter.Parameters;
+			var firstInputParam = FirstInputParamTextBox.Text = _currentPreset?.FirstFileParameter.Parameters ?? string.Empty;
+			var secondInputParam = SecondInputParamTextBox.Text = _currentPreset?.SecondFileParameter.Parameters ?? string.Empty;
+			var outputParam = OutputParameterTextBox.Text = _currentPreset?.OutputFileParameter.Parameters ?? string.Empty;
 			ReplaceFilePath(FirstFilePathTextBox, firstInputParam, LauncherConstants.FirstFileName);
 
 			if (!string.IsNullOrEmpty(secondInputParam))

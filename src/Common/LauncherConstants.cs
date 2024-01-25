@@ -47,7 +47,7 @@
 		/// </summary>
 		public const string DefaultInputFileFormats = "Video files (MP4, etc.)|*.mp4; *.mkv; *.mov; *.avi; *.wmv; *.webm|" +
 			"Audio files (WAV, etc.)|*.wav; *.mp3; *.opus; *.m4a; *.ogg; *.flac; *.aac; *.alac; *.ape; *.webm|" +
-			"Image files (PNG, etc.)|*.png; *.jpg; *.bmp; .tiff; *.jpeg; *.raw|" +
+			"Image files (PNG, etc.)|*.png; *.jpg; *.bmp; .tiff; *.jpeg; *.raw; *.gif|" +
 			"All files (*.*)|*.*";
 
 		/// <summary>

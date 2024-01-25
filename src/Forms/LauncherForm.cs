@@ -403,7 +403,7 @@ namespace Mugnum.FFmpegLauncher.Forms
 				return;
 			}
 
-			OutputFilePathTextBox.Text = CopyFileName(FirstFilePathTextBox.Text, selectFolderDialog.FileName);
+			OutputFilePathTextBox.Text = CopyFileName(FirstFilePathTextBox.Text, selectFolderDialog.FileName, OutputParameterTextBox.Text);
 		}
 
 		/// <summary>
@@ -431,7 +431,7 @@ namespace Mugnum.FFmpegLauncher.Forms
 				? outputFilePath
 				: Path.GetDirectoryName(outputFilePath);
 
-			OutputFilePathTextBox.Text = CopyFileName(FirstFilePathTextBox.Text, outputDirectory);
+			OutputFilePathTextBox.Text = CopyFileName(FirstFilePathTextBox.Text, outputDirectory, OutputParameterTextBox.Text);
 		}
 
 		/// <summary>
@@ -439,22 +439,26 @@ namespace Mugnum.FFmpegLauncher.Forms
 		/// </summary>
 		/// <param name="filePath"> Path to file, whose name needs to be copied. </param>
 		/// <param name="outputDirectory"> Path to target directory. </param>
+		/// <param name="outputParameters"> Output file parameters. </param>
 		/// <returns> Output file path. </returns>
-		private static string CopyFileName(string filePath, string outputDirectory)
+		private static string CopyFileName(string filePath, string outputDirectory, string outputParameters = null)
 		{
 			if (string.IsNullOrEmpty(filePath))
 			{
 				return $"{outputDirectory}\\";
 			}
 
+			var fileExtension = !string.IsNullOrEmpty(outputParameters) && outputParameters.Contains($"{{{LauncherConstants.PreferredFormat}=")
+				? $".{GetKeywordValue(outputParameters, LauncherConstants.PreferredFormat)}"
+				: Path.GetExtension(filePath);
+
 			if (Path.GetDirectoryName(filePath) != outputDirectory)
 			{
-				return $"{outputDirectory}\\{Path.GetFileName(filePath)}";
+				return $"{outputDirectory}\\{Path.GetFileNameWithoutExtension(filePath)}{fileExtension}";
 			}
 
 			// If output file is in same directory as input file #1, then add "_new" prefix to it.
 			var result = $"{outputDirectory}\\{Path.GetFileNameWithoutExtension(filePath)}_new";
-			var fileExtension = Path.GetExtension(filePath);
 
 			if (!string.IsNullOrEmpty(fileExtension))
 			{

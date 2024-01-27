@@ -2,4 +2,4 @@
 bin
 obj
 packages
-\src\Properties\PublishProfiles\*
+/src/Properties/PublishProfiles/*

@@ -16,7 +16,7 @@ Download [FFmpeg](https://github.com/BtbN/FFmpeg-Builds/releases), download late
 Extract everything into same directory.
 
 ## Advanced usage
-Several macros are available. See [presets](https://raw.githubusercontent.com/syrtsevser/FFmpegLauncher/main/presets/General%20examples/FFmpeg%20Launcher.json) for examples.
+Several macros are available. Download [presets](https://raw.githubusercontent.com/syrtsevser/FFmpegLauncher/main/presets/General%20examples/FFmpeg%20Launcher.json) for examples.
 * `{file1name=Path}`, `{file2name=Path}`, `{outputname=Path}` -- Save predetermined paths in preset, which will automatically be filled in when switching presets.
 * `{file1name}`, `{file2name}`, `{outputname}` -- Insert path to file in place of macro.
 * `{noffmpeg}` -- Skip starting FFmpeg executable, while still applying all the arguments in command prompt. Can be used to chain different scripts and programs. For example: prepare a list of files, save them to %temp%\list.txt, and concatenate all videos in list using ffmpeg afterwards without re-encoding.

@@ -19,6 +19,6 @@ Extract everything into same directory.
 Several macros are available. Download [presets](https://raw.githubusercontent.com/syrtsevser/FFmpegLauncher/main/presets/General%20examples/FFmpeg%20Launcher.json) for examples.
 * `{file1name=Path}`, `{file2name=Path}`, `{outputname=Path}` -- Save predetermined paths in preset, which will automatically be filled in when switching presets.
 * `{file1name}`, `{file2name}`, `{outputname}` -- Insert path to file in place of macro.
-* `{noffmpeg}` -- Skip starting FFmpeg executable, while still applying all the arguments in command prompt. Can be used to chain different scripts and programs. For example: prepare a list of files, save them to %temp%\list.txt, and concatenate all videos in list using ffmpeg afterwards without re-encoding.
+* `{noffmpeg}` -- Skip starting FFmpeg executable, while still applying all the arguments in command prompt. Can be used to chain different scripts and programs. For example: prepare a list of files, save them to %temp%\list.txt, and afterwards concatenate all videos in list using ffmpeg without re-encoding.
 * `{ignore_i}` -- Skip adding "-i" argument before input files' paths.
 * `{preferred_format}` -- Automatically picks the correct filter in "Browse output file" dialog. When using with "Copy File1 name" option, automatically replaces input file's extension to preferred.

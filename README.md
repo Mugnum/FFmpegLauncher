@@ -5,7 +5,7 @@ Made this utility for personal use a while ago, and it's been serving me well fo
 
 ## Preview
 ![alt text](https://raw.githubusercontent.com/syrtsevser/FFmpegLauncher/main/media/screenshot_1.png)
-Click to enlarge image.
+Click on image to enlarge.
 
 ## Requirements
 - [.NET Desktop Runtime 8.0.1+](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)

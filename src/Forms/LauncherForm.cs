@@ -22,13 +22,18 @@ namespace Mugnum.FFmpegLauncher.Forms
 	{
 		// TODO: Add drag-and-drop for files.
 		// TODO: Add macros in GUI.
-		
+
 		#region Constants and fields
 
 		/// <summary>
 		/// Minimal <see cref="ComboBox"/> index value.
 		/// </summary>
 		private const int ComboBoxMinValue = 0;
+
+		/// <summary>
+		/// Default text for "Preset" label.
+		/// </summary>
+		private const string DefaultPresetLabelText = "Preset:";
 
 		/// <summary>
 		/// Config file name.
@@ -43,7 +48,7 @@ namespace Mugnum.FFmpegLauncher.Forms
 		/// <summary>
 		/// FFmpeg launcher manager.
 		/// </summary>
-		private readonly LauncherManager _launcherManager = new ();
+		private readonly LauncherManager _launcherManager = new();
 
 		/// <summary>
 		/// Settings configuration.
@@ -82,8 +87,16 @@ namespace Mugnum.FFmpegLauncher.Forms
 			}
 
 			InitializeConfig();
+
 			Application.ApplicationExit += OnApplicationExit;
 			_launcherManager.CommandExecuted += RemoveQueuedItem;
+
+			FirstInputParamTextBox.TextChanged += ChangeLabelForPreset;
+			FirstFilePathTextBox.TextChanged += ChangeLabelForPreset;
+			SecondInputParamTextBox.TextChanged += ChangeLabelForPreset;
+			SecondFilePathTextBox.TextChanged += ChangeLabelForPreset;
+			OutputParameterTextBox.TextChanged += ChangeLabelForPreset;
+			OutputFilePathTextBox.TextChanged += ChangeLabelForPreset;
 		}
 
 		#endregion Constructors
@@ -126,7 +139,7 @@ namespace Mugnum.FFmpegLauncher.Forms
 				PresetList.Items.AddRange(_config.Presets.Cast<object>().ToArray());
 
 				if (_config.LastSelectedPresetIndex >= ComboBoxMinValue
-				    && _config.LastSelectedPresetIndex < PresetList.Items.Count)
+					&& _config.LastSelectedPresetIndex < PresetList.Items.Count)
 				{
 					PresetList.SelectedIndex = _config.LastSelectedPresetIndex;
 				}
@@ -218,6 +231,26 @@ namespace Mugnum.FFmpegLauncher.Forms
 		}
 
 		/// <summary>
+		/// Shows settings form.
+		/// </summary>
+		private void ShowSettingsForm()
+		{
+			using var form = new SettingsForm(_config);
+			form.StartPosition = FormStartPosition.CenterParent;
+			var result = form.ShowDialog();
+
+			if (result != DialogResult.OK || form.Configuration == null)
+			{
+				return;
+			}
+
+			var resultConfig = form.Configuration;
+			_config.FfmpegExePath = resultConfig.FfmpegExePath;
+			_config.DefaultPath = resultConfig.DefaultPath;
+			_config.StartFfmpegMinimized = resultConfig.StartFfmpegMinimized;
+		}
+
+		/// <summary>
 		/// Creates new preset.
 		/// </summary>
 		private void AddNewPreset()
@@ -232,6 +265,7 @@ namespace Mugnum.FFmpegLauncher.Forms
 
 			_config.Presets ??= new List<Preset>();
 			_currentPreset = PreparePreset(presetName);
+			PresetLabel.Text = DefaultPresetLabelText;
 
 			// Specifying StartIndex makes search case-insensitive.
 			var existingComboBoxIndex = PresetList.FindStringExact(presetName, StartIndex);
@@ -275,6 +309,7 @@ namespace Mugnum.FFmpegLauncher.Forms
 			}
 
 			_config.Presets[activePresetIndex] = PreparePreset(presetName);
+			PresetLabel.Text = DefaultPresetLabelText;
 		}
 
 		/// <summary>
@@ -291,7 +326,7 @@ namespace Mugnum.FFmpegLauncher.Forms
 			{
 				return;
 			}
-			
+
 			var filePath = GetKeywordValue(parameters, keywordName);
 
 			if (!string.IsNullOrEmpty(filePath))
@@ -472,6 +507,61 @@ namespace Mugnum.FFmpegLauncher.Forms
 
 		#region Methods: Event handlers
 
+		#region Tooltips
+
+		/// <summary>
+		/// On hover over "Save preset" button.
+		/// </summary>
+		/// <param name="sender"> Event raising object. </param>
+		/// <param name="e"> Event arguments. </param>
+		private void SavePresetButton_MouseHover(object sender, EventArgs e)
+		{
+			ToolTip.Show("Save preset", SavePresetButton);
+		}
+
+		/// <summary>
+		/// On hover over "New preset" button.
+		/// </summary>
+		/// <param name="sender"> Event raising object. </param>
+		/// <param name="e"> Event arguments. </param>
+		private void AddPresetButton_MouseHover(object sender, EventArgs e)
+		{
+			ToolTip.Show("Add new preset", AddPresetButton);
+		}
+
+		/// <summary>
+		/// On hover over "Delete preset" button.
+		/// </summary>
+		/// <param name="sender"> Event raising object. </param>
+		/// <param name="e"> Event arguments. </param>
+		private void DeletePresetButton_MouseHover(object sender, EventArgs e)
+		{
+			ToolTip.Show("Delete preset", DeletePresetButton);
+		}
+
+		/// <summary>
+		/// On hover over "Show settings" button.
+		/// </summary>
+		/// <param name="sender"> Event raising object. </param>
+		/// <param name="e"> Event arguments. </param>
+		private void SettingsButton_MouseHover(object sender, EventArgs e)
+		{
+			ToolTip.Show("Show settings", SettingsButton);
+		}
+
+		/// <summary>
+		/// On hover over "Close on finish" checkbox.
+		/// </summary>
+		/// <param name="sender"> Event raising object. </param>
+		/// <param name="e"> Event arguments. </param>
+		private void CloseOnFinishCheckbox_MouseHover(object sender, EventArgs e)
+		{
+			ToolTip.Show("Close command prompt when processing finishes. Is automatically closed when enqueued.",
+				CloseOnFinishCheckbox);
+		}
+
+		#endregion Tooltips
+
 		/// <summary>
 		/// Processes application exit.
 		/// </summary>
@@ -504,6 +594,14 @@ namespace Mugnum.FFmpegLauncher.Forms
 			}
 		}
 
+		private void ChangeLabelForPreset(object sender, EventArgs e)
+		{
+			if (sender is TextBox { Modified: true })
+			{
+				PresetLabel.Text = $"{DefaultPresetLabelText} *";
+			}
+		}
+
 		/// <summary>
 		/// Run FFmpeg execution.
 		/// </summary>
@@ -511,7 +609,8 @@ namespace Mugnum.FFmpegLauncher.Forms
 		/// <param name="e"> Event arguments. </param>
 		private void RunProgramButton_Click(object sender, EventArgs e)
 		{
-			_launcherManager.Execute(PrepareCommand());
+			_launcherManager.Execute(PrepareCommand(),
+				_config.StartFfmpegMinimized, _config.FfmpegExePath);
 		}
 
 		/// <summary>
@@ -521,8 +620,10 @@ namespace Mugnum.FFmpegLauncher.Forms
 		/// <param name="e"> Event arguments. </param>
 		private void QueueExecutionButton_Click(object sender, EventArgs e)
 		{
+			const bool IsQueued = true;
 			QueueListBox.Items.Add(GetOutputFileName());
-			_launcherManager.Execute(PrepareCommand(), true);
+			_launcherManager.Execute(PrepareCommand(),
+				_config.StartFfmpegMinimized, _config.FfmpegExePath, IsQueued);
 		}
 
 		/// <summary>
@@ -584,6 +685,17 @@ namespace Mugnum.FFmpegLauncher.Forms
 
 			_config.Presets.Remove(_currentPreset);
 			PresetList.Items.RemoveAt(PresetList.SelectedIndex);
+			PresetLabel.Text = DefaultPresetLabelText;
+		}
+
+		/// <summary>
+		/// Opens settings window.
+		/// </summary>
+		/// <param name="sender"> Event raising object. </param>
+		/// <param name="e"> Event arguments. </param>
+		private void SettingsButton_Click(object sender, EventArgs e)
+		{
+			ShowSettingsForm();
 		}
 
 		/// <summary>
@@ -637,6 +749,8 @@ namespace Mugnum.FFmpegLauncher.Forms
 			{
 				ReplaceFilePath(OutputFilePathTextBox, outputParam, LauncherConstants.OutputFileName);
 			}
+
+			PresetLabel.Text = DefaultPresetLabelText;
 		}
 
 		/// <summary>

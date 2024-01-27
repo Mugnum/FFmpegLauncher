@@ -10,6 +10,9 @@
     <Compile Update="Forms\LauncherForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="Forms\SettingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Forms\LauncherForm.resx">

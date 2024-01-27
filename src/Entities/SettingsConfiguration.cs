@@ -27,19 +27,19 @@ namespace Mugnum.FFmpegLauncher.Entities
 		}
 
 		/// <summary>
-		/// When set to <see langword="true"/> - copies first input file's name to output file's name.
+		/// Need to copy first input file's name to output file's path.
 		/// </summary>
 		public bool IsCopyingFileName { get; set; }
 
 		/// <summary>
-		/// When set to <see langword="true"/> - closes console on finished execution.
+		/// Need to close console on finished execution.
 		/// </summary>
 		public bool IsClosingOnFinish { get; set; } = true;
 
 		/// <summary>
 		/// Overrides existing preset if preset with given name already exists.
 		/// </summary>
-		public bool IsOverridingExistingPreset { get; set; } = true;
+		public bool IsOverridingExistingPreset { get; set; } = false;
 
 		/// <summary>
 		/// Last known "Presets" ComboBox index.
@@ -47,9 +47,19 @@ namespace Mugnum.FFmpegLauncher.Entities
 		public int LastSelectedPresetIndex { get; set; } = DefaultComboBoxIndex;
 
 		/// <summary>
+		/// Path to FFmpeg executable.
+		/// </summary>
+		public string FfmpegExePath { get; set; }
+
+		/// <summary>
 		/// Default path to files.
 		/// </summary>
 		public string DefaultPath { get; set; }
+
+		/// <summary>
+		/// Start FFmpeg minimized, without stealing focus.
+		/// </summary>
+		public bool StartFfmpegMinimized { get; set; }
 
 		/// <summary>
 		/// Create new settings configuration instance.

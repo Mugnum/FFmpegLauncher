@@ -34,10 +34,10 @@
 			QueueLabel = new System.Windows.Forms.Label();
 			RunProgramButton = new System.Windows.Forms.Button();
 			SavePresetButton = new System.Windows.Forms.Button();
-			imageList1 = new System.Windows.Forms.ImageList(components);
+			ImageList = new System.Windows.Forms.ImageList(components);
 			DeletePresetButton = new System.Windows.Forms.Button();
 			AddPresetButton = new System.Windows.Forms.Button();
-			labelPreset = new System.Windows.Forms.Label();
+			PresetLabel = new System.Windows.Forms.Label();
 			PresetList = new System.Windows.Forms.ComboBox();
 			CopyFirstFileNameCheckbox = new System.Windows.Forms.CheckBox();
 			SecondInputParamTextBox = new System.Windows.Forms.TextBox();
@@ -58,17 +58,18 @@
 			label1 = new System.Windows.Forms.Label();
 			QueueExecutionButton = new System.Windows.Forms.Button();
 			ClearQueueButton = new System.Windows.Forms.Button();
+			SettingsButton = new System.Windows.Forms.Button();
+			ToolTip = new System.Windows.Forms.ToolTip(components);
 			SuspendLayout();
 			// 
 			// QueueListBox
 			// 
 			QueueListBox.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-			QueueListBox.Enabled = false;
 			QueueListBox.FormattingEnabled = true;
+			QueueListBox.HorizontalScrollbar = true;
 			QueueListBox.ItemHeight = 15;
 			QueueListBox.Location = new System.Drawing.Point(721, 27);
 			QueueListBox.Name = "QueueListBox";
-			QueueListBox.ScrollAlwaysVisible = true;
 			QueueListBox.Size = new System.Drawing.Size(162, 349);
 			QueueListBox.TabIndex = 98;
 			// 
@@ -100,61 +101,68 @@
 			// 
 			SavePresetButton.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
 			SavePresetButton.ImageIndex = 2;
-			SavePresetButton.ImageList = imageList1;
+			SavePresetButton.ImageList = ImageList;
 			SavePresetButton.Location = new System.Drawing.Point(258, 431);
 			SavePresetButton.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
 			SavePresetButton.Name = "SavePresetButton";
 			SavePresetButton.Size = new System.Drawing.Size(24, 24);
 			SavePresetButton.TabIndex = 90;
+			SavePresetButton.Tag = "";
 			SavePresetButton.UseVisualStyleBackColor = true;
 			SavePresetButton.Click += SavePresetButton_Click;
+			SavePresetButton.MouseHover += SavePresetButton_MouseHover;
 			// 
-			// imageList1
+			// ImageList
 			// 
-			imageList1.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
-			imageList1.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageList1.ImageStream");
-			imageList1.TransparentColor = System.Drawing.Color.Transparent;
-			imageList1.Images.SetKeyName(0, "Add_16x.png");
-			imageList1.Images.SetKeyName(1, "Remove_color_16x.png");
-			imageList1.Images.SetKeyName(2, "Save_16x.png");
+			ImageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
+			ImageList.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("ImageList.ImageStream");
+			ImageList.TransparentColor = System.Drawing.Color.Transparent;
+			ImageList.Images.SetKeyName(0, "Add_16x.png");
+			ImageList.Images.SetKeyName(1, "Remove_color_16x.png");
+			ImageList.Images.SetKeyName(2, "Save_16x.png");
+			ImageList.Images.SetKeyName(3, "ProcedureSettings.png");
 			// 
 			// DeletePresetButton
 			// 
 			DeletePresetButton.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
 			DeletePresetButton.ImageIndex = 1;
-			DeletePresetButton.ImageList = imageList1;
+			DeletePresetButton.ImageList = ImageList;
 			DeletePresetButton.Location = new System.Drawing.Point(318, 431);
 			DeletePresetButton.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
 			DeletePresetButton.Name = "DeletePresetButton";
 			DeletePresetButton.Size = new System.Drawing.Size(24, 24);
 			DeletePresetButton.TabIndex = 92;
+			DeletePresetButton.Tag = "";
 			DeletePresetButton.UseVisualStyleBackColor = true;
 			DeletePresetButton.Click += DeletePresetButton_Click;
+			DeletePresetButton.MouseHover += DeletePresetButton_MouseHover;
 			// 
 			// AddPresetButton
 			// 
 			AddPresetButton.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
 			AddPresetButton.ImageIndex = 0;
-			AddPresetButton.ImageList = imageList1;
+			AddPresetButton.ImageList = ImageList;
 			AddPresetButton.Location = new System.Drawing.Point(288, 431);
 			AddPresetButton.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
 			AddPresetButton.Name = "AddPresetButton";
 			AddPresetButton.Size = new System.Drawing.Size(24, 24);
 			AddPresetButton.TabIndex = 91;
+			AddPresetButton.Tag = "";
 			AddPresetButton.UseVisualStyleBackColor = true;
 			AddPresetButton.Click += AddPresetButton_Click;
+			AddPresetButton.MouseHover += AddPresetButton_MouseHover;
 			// 
-			// labelPreset
+			// PresetLabel
 			// 
-			labelPreset.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-			labelPreset.AutoSize = true;
-			labelPreset.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 204);
-			labelPreset.Location = new System.Drawing.Point(17, 434);
-			labelPreset.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-			labelPreset.Name = "labelPreset";
-			labelPreset.Size = new System.Drawing.Size(40, 13);
-			labelPreset.TabIndex = 88;
-			labelPreset.Text = "Preset:";
+			PresetLabel.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+			PresetLabel.AutoSize = true;
+			PresetLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 204);
+			PresetLabel.Location = new System.Drawing.Point(17, 434);
+			PresetLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			PresetLabel.Name = "PresetLabel";
+			PresetLabel.Size = new System.Drawing.Size(40, 13);
+			PresetLabel.TabIndex = 88;
+			PresetLabel.Text = "Preset:";
 			// 
 			// PresetList
 			// 
@@ -238,6 +246,7 @@
 			CloseOnFinishCheckbox.Text = "Close on finish";
 			CloseOnFinishCheckbox.UseVisualStyleBackColor = true;
 			CloseOnFinishCheckbox.CheckedChanged += CloseOnFinishCheckbox_CheckedChanged;
+			CloseOnFinishCheckbox.MouseHover += CloseOnFinishCheckbox_MouseHover;
 			// 
 			// BrowseSecondFileButton
 			// 
@@ -387,11 +396,27 @@
 			ClearQueueButton.UseVisualStyleBackColor = true;
 			ClearQueueButton.Click += ClearQueueButton_Click;
 			// 
+			// SettingsButton
+			// 
+			SettingsButton.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+			SettingsButton.ImageIndex = 3;
+			SettingsButton.ImageList = ImageList;
+			SettingsButton.Location = new System.Drawing.Point(348, 431);
+			SettingsButton.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+			SettingsButton.Name = "SettingsButton";
+			SettingsButton.Size = new System.Drawing.Size(24, 24);
+			SettingsButton.TabIndex = 100;
+			SettingsButton.Tag = "";
+			SettingsButton.UseVisualStyleBackColor = true;
+			SettingsButton.Click += SettingsButton_Click;
+			SettingsButton.MouseHover += SettingsButton_MouseHover;
+			// 
 			// LauncherForm
 			// 
 			AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			ClientSize = new System.Drawing.Size(899, 478);
+			Controls.Add(SettingsButton);
 			Controls.Add(ClearQueueButton);
 			Controls.Add(QueueListBox);
 			Controls.Add(QueueLabel);
@@ -399,7 +424,7 @@
 			Controls.Add(SavePresetButton);
 			Controls.Add(DeletePresetButton);
 			Controls.Add(AddPresetButton);
-			Controls.Add(labelPreset);
+			Controls.Add(PresetLabel);
 			Controls.Add(PresetList);
 			Controls.Add(CopyFirstFileNameCheckbox);
 			Controls.Add(SecondInputParamTextBox);
@@ -433,10 +458,10 @@
 		private System.Windows.Forms.Label QueueLabel;
 		private System.Windows.Forms.Button RunProgramButton;
 		private System.Windows.Forms.Button SavePresetButton;
-		private System.Windows.Forms.ImageList imageList1;
+		private System.Windows.Forms.ImageList ImageList;
 		private System.Windows.Forms.Button DeletePresetButton;
 		private System.Windows.Forms.Button AddPresetButton;
-		private System.Windows.Forms.Label labelPreset;
+		private System.Windows.Forms.Label PresetLabel;
 		internal System.Windows.Forms.ComboBox PresetList;
 		private System.Windows.Forms.CheckBox CopyFirstFileNameCheckbox;
 		private System.Windows.Forms.TextBox SecondInputParamTextBox;
@@ -457,5 +482,7 @@
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Button QueueExecutionButton;
 		private System.Windows.Forms.Button ClearQueueButton;
+		private System.Windows.Forms.Button SettingsButton;
+		private System.Windows.Forms.ToolTip ToolTip;
 	}
 }

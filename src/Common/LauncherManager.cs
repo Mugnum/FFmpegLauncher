@@ -15,17 +15,21 @@ namespace Mugnum.FFmpegLauncher.Common
 	/// </summary>
 	internal partial class LauncherManager
 	{
-		#region Constants and fields
+		#region Constants
 
 		/// <summary>
-		/// Path to executable.
+		/// Default path to FFmpeg executable.
 		/// </summary>
-		private const string ExecutablePath = "ffmpeg";
+		private const string DefaultExecutablePath = "ffmpeg.exe";
 
 		/// <summary>
 		/// Path to console application.
 		/// </summary>
 		private const string ConsoleApplication = "cmd.exe";
+
+		#endregion Constants
+
+		#region Fields
 
 		/// <summary>
 		/// Is execution in progress.
@@ -33,15 +37,25 @@ namespace Mugnum.FFmpegLauncher.Common
 		private bool _isQueueBusy;
 
 		/// <summary>
+		/// Path to FFmpeg executable.
+		/// </summary>
+		private string _executablePath;
+
+		/// <summary>
+		/// Start FFmpeg minimized.
+		/// </summary>
+		private bool _isStartingMinimized;
+
+		#endregion Fields
+
+		#region Properties and events
+
+		/// <summary>
 		/// New line detection regex pattern.
 		/// </summary>
 		/// <returns> Regex pattern for new line. </returns>
 		[GeneratedRegex(@"\r\n?|\n")]
 		private static partial Regex NewLineRegex();
-
-		#endregion Constants and fields
-
-		#region Properties and events
 
 		/// <summary>
 		/// Command queue.
@@ -52,6 +66,17 @@ namespace Mugnum.FFmpegLauncher.Common
 		/// Handler for command execution.
 		/// </summary>
 		public event EventHandler<CommandEventArgs> CommandExecuted;
+
+		/// <summary>
+		/// Path to FFmpeg executable.
+		/// </summary>
+		private string ExecutablePath
+		{
+			get => _executablePath;
+			set => _executablePath = string.IsNullOrEmpty(value)
+				? DefaultExecutablePath
+				: value;
+		}
 
 		#endregion Properties and events
 
@@ -73,11 +98,16 @@ namespace Mugnum.FFmpegLauncher.Common
 		/// Execute command.
 		/// </summary>
 		/// <param name="command"> Command. </param>
+		/// <param name="isStartingMinimized"> Start FFmpeg minimized, without stealing focus. </param>
+		/// <param name="executablePath"> Path to FFmpeg executable. If empty - launcher's current directory will be used. </param>
 		/// <param name="isQueued"> Is processing in a queue. </param>
 		/// <exception cref="ArgumentNullException"></exception>
-		public void Execute(Command command, bool isQueued = false)
+		public void Execute(Command command, bool isStartingMinimized = false,
+			string executablePath = DefaultExecutablePath, bool isQueued = false)
 		{
 			_ = command ?? throw new ArgumentNullException(nameof(command));
+			_isStartingMinimized = isStartingMinimized;
+			ExecutablePath = executablePath;
 
 			if (isQueued && _isQueueBusy)
 			{
@@ -85,7 +115,7 @@ namespace Mugnum.FFmpegLauncher.Common
 				return;
 			}
 
-			_ = ExecuteCommand(command);
+			_ = ExecuteCommand(command, isQueued);
 		}
 
 		/// <summary>
@@ -105,13 +135,11 @@ namespace Mugnum.FFmpegLauncher.Common
 		/// </summary>
 		/// <param name="sender"> Event raising object. </param>
 		/// <param name="eventArgs"> Event arguments. </param>
-		private void ProcessQueue(object sender, EventArgs eventArgs)
+		private void ProcessQueue(object sender, CommandEventArgs eventArgs)
 		{
-			// TODO: At the moment, this may skip active queue item when mixing modes.
-
 			if (!CommandsQueue.IsEmpty())
 			{
-				_ = ExecuteCommand(CommandsQueue.Dequeue());
+				_ = ExecuteCommand(CommandsQueue.Dequeue(), true);
 			}
 		}
 
@@ -123,6 +151,7 @@ namespace Mugnum.FFmpegLauncher.Common
 		/// <exception cref="ArgumentNullException"></exception>
 		private async Task ExecuteCommand(Command command, bool isQueued = false)
 		{
+			const string ExecuteCommandsArgument = "/k";
 			const string NoFfmpegMacro = $"{{{LauncherConstants.NoFfmpeg}}}";
 
 			_ = command ?? throw new ArgumentNullException(nameof(command));
@@ -145,7 +174,7 @@ namespace Mugnum.FFmpegLauncher.Common
 				&& !secondParams.Contains(NoFfmpegMacro)
 				&& !outputParams.Contains(NoFfmpegMacro))
 			{
-				builder.Append($" {ExecutablePath}");
+				builder.Append($" \"{ExecutablePath}\"");
 			}
 
 			builder.Append($" {firstParams}");
@@ -190,18 +219,20 @@ namespace Mugnum.FFmpegLauncher.Common
 			}
 
 			// Close console on finish and continue queue processing.
-			if (command.IsClosingOnFinish
-				|| (isQueued && !CommandsQueue.IsEmpty()))
+			if (command.IsClosingOnFinish || isQueued)
 			{
 				cmdText += " & exit";
 			}
 
-			var process = Process.Start(ConsoleApplication, $"/k {cmdText}");
-
-			if (process != null)
-			{
-				await process.WaitForExitAsync();
-			}
+			var process = new Process();
+			process.StartInfo.FileName = ConsoleApplication;
+			process.StartInfo.Arguments = $"{ExecuteCommandsArgument} \"{cmdText}\"";
+			process.StartInfo.WindowStyle = _isStartingMinimized
+				? ProcessWindowStyle.Minimized
+				: ProcessWindowStyle.Normal;
+			
+			process.Start();
+			await process.WaitForExitAsync();
 
 			_isQueueBusy = !CommandsQueue.IsEmpty();
 			CommandExecuted?.Invoke(this, new CommandEventArgs(outputFilePath));

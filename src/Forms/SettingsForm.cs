@@ -117,7 +117,7 @@ namespace Mugnum.FFmpegLauncher.Forms
 		/// <param name="e"> Event arguments. </param>
 		private void BrowseFfmpegExePathButton_Click(object sender, EventArgs e)
 		{
-			if (BrowsePath("Browse FFmpeg exe", false, out var selectedPath))
+			if (BrowsePath("Browse FFmpeg executable", false, out var selectedPath))
 			{
 				FfmpegExePathTextBox.Text = selectedPath;
 			}

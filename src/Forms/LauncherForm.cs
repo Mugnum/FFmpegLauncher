@@ -594,6 +594,11 @@ namespace Mugnum.FFmpegLauncher.Forms
 			}
 		}
 
+		/// <summary>
+		/// Updates "Preset" label, marking it as edited.
+		/// </summary>
+		/// <param name="sender"> Event raising object. </param>
+		/// <param name="e"> Event arguments. </param>
 		private void ChangeLabelForPreset(object sender, EventArgs e)
 		{
 			if (sender is TextBox { Modified: true })

@@ -15,6 +15,8 @@ Download [FFmpeg](https://github.com/BtbN/FFmpeg-Builds/releases), download late
 
 Extract everything into same directory.
 
+The workflow is identical to using command prompt, except without adding "-i" prefix, file paths are added automatically when they're set.
+
 ## Advanced usage
 Several macros are available. Download [presets](https://raw.githubusercontent.com/syrtsevser/FFmpegLauncher/main/presets/General%20examples/FFmpeg%20Launcher.json) for examples.
 * `{file1name=Path}`, `{file2name=Path}`, `{outputname=Path}` -- Save predetermined paths in preset, which will automatically be filled in when switching presets.

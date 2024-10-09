@@ -4,7 +4,7 @@ Basic GUI launcher for FFmpeg, based on WinForms and .NET Core. Windows OS only.
 Made this utility for personal use a while ago, and it's been serving me well for several years now. Decided to polish it up and upload for public use, that said don't expect much support. You can do whatever you want with it though.
 
 ## Preview
-![alt text](https://raw.githubusercontent.com/syrtsevser/FFmpegLauncher/main/media/screenshot_1.png)
+![alt text](https://raw.githubusercontent.com/syrtsevser/FFmpegLauncher/refs/heads/main/media/screenshot_1.png)
 Click on image to enlarge.
 
 ## Requirements

@@ -60,6 +60,10 @@
 			ClearQueueButton = new System.Windows.Forms.Button();
 			SettingsButton = new System.Windows.Forms.Button();
 			ToolTip = new System.Windows.Forms.ToolTip(components);
+			PrevFirstFileButton = new System.Windows.Forms.Button();
+			NextFirstFileButton = new System.Windows.Forms.Button();
+			NextSecondFileButton = new System.Windows.Forms.Button();
+			PrevSecondFileButton = new System.Windows.Forms.Button();
 			SuspendLayout();
 			// 
 			// QueueListBox
@@ -218,7 +222,7 @@
 			SecondFilePathTextBox.Location = new System.Drawing.Point(80, 191);
 			SecondFilePathTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
 			SecondFilePathTextBox.Name = "SecondFilePathTextBox";
-			SecondFilePathTextBox.Size = new System.Drawing.Size(512, 23);
+			SecondFilePathTextBox.Size = new System.Drawing.Size(458, 23);
 			SecondFilePathTextBox.TabIndex = 81;
 			// 
 			// label6
@@ -251,7 +255,7 @@
 			// BrowseSecondFileButton
 			// 
 			BrowseSecondFileButton.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-			BrowseSecondFileButton.Location = new System.Drawing.Point(608, 189);
+			BrowseSecondFileButton.Location = new System.Drawing.Point(608, 191);
 			BrowseSecondFileButton.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
 			BrowseSecondFileButton.Name = "BrowseSecondFileButton";
 			BrowseSecondFileButton.Size = new System.Drawing.Size(90, 23);
@@ -263,7 +267,7 @@
 			// BrowseOutputFileButton
 			// 
 			BrowseOutputFileButton.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-			BrowseOutputFileButton.Location = new System.Drawing.Point(608, 392);
+			BrowseOutputFileButton.Location = new System.Drawing.Point(608, 394);
 			BrowseOutputFileButton.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
 			BrowseOutputFileButton.Name = "BrowseOutputFileButton";
 			BrowseOutputFileButton.Size = new System.Drawing.Size(90, 23);
@@ -296,7 +300,7 @@
 			// BrowseFirstFileButton
 			// 
 			BrowseFirstFileButton.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-			BrowseFirstFileButton.Location = new System.Drawing.Point(608, 80);
+			BrowseFirstFileButton.Location = new System.Drawing.Point(608, 82);
 			BrowseFirstFileButton.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
 			BrowseFirstFileButton.Name = "BrowseFirstFileButton";
 			BrowseFirstFileButton.Size = new System.Drawing.Size(90, 23);
@@ -311,7 +315,7 @@
 			FirstFilePathTextBox.Location = new System.Drawing.Point(80, 82);
 			FirstFilePathTextBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
 			FirstFilePathTextBox.Name = "FirstFilePathTextBox";
-			FirstFilePathTextBox.Size = new System.Drawing.Size(512, 23);
+			FirstFilePathTextBox.Size = new System.Drawing.Size(458, 23);
 			FirstFilePathTextBox.TabIndex = 76;
 			// 
 			// label3
@@ -411,11 +415,63 @@
 			SettingsButton.Click += SettingsButton_Click;
 			SettingsButton.MouseHover += SettingsButton_MouseHover;
 			// 
+			// PrevFirstFileButton
+			// 
+			PrevFirstFileButton.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+			PrevFirstFileButton.Location = new System.Drawing.Point(548, 82);
+			PrevFirstFileButton.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+			PrevFirstFileButton.Name = "PrevFirstFileButton";
+			PrevFirstFileButton.Size = new System.Drawing.Size(23, 23);
+			PrevFirstFileButton.TabIndex = 101;
+			PrevFirstFileButton.Text = "<";
+			PrevFirstFileButton.UseVisualStyleBackColor = true;
+			PrevFirstFileButton.Click += PrevFirstFileButton_Click;
+			// 
+			// NextFirstFileButton
+			// 
+			NextFirstFileButton.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+			NextFirstFileButton.Location = new System.Drawing.Point(578, 82);
+			NextFirstFileButton.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+			NextFirstFileButton.Name = "NextFirstFileButton";
+			NextFirstFileButton.Size = new System.Drawing.Size(23, 23);
+			NextFirstFileButton.TabIndex = 102;
+			NextFirstFileButton.Text = ">";
+			NextFirstFileButton.UseVisualStyleBackColor = true;
+			NextFirstFileButton.Click += NextFirstFileButton_Click;
+			// 
+			// NextSecondFileButton
+			// 
+			NextSecondFileButton.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+			NextSecondFileButton.Location = new System.Drawing.Point(578, 191);
+			NextSecondFileButton.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+			NextSecondFileButton.Name = "NextSecondFileButton";
+			NextSecondFileButton.Size = new System.Drawing.Size(23, 23);
+			NextSecondFileButton.TabIndex = 104;
+			NextSecondFileButton.Text = ">";
+			NextSecondFileButton.UseVisualStyleBackColor = true;
+			NextSecondFileButton.Click += NextSecondFileButton_Click;
+			// 
+			// PrevSecondFileButton
+			// 
+			PrevSecondFileButton.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+			PrevSecondFileButton.Location = new System.Drawing.Point(548, 191);
+			PrevSecondFileButton.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+			PrevSecondFileButton.Name = "PrevSecondFileButton";
+			PrevSecondFileButton.Size = new System.Drawing.Size(23, 23);
+			PrevSecondFileButton.TabIndex = 103;
+			PrevSecondFileButton.Text = "<";
+			PrevSecondFileButton.UseVisualStyleBackColor = true;
+			PrevSecondFileButton.Click += PrevSecondFileButton_Click;
+			// 
 			// LauncherForm
 			// 
 			AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			ClientSize = new System.Drawing.Size(899, 478);
+			Controls.Add(NextSecondFileButton);
+			Controls.Add(PrevSecondFileButton);
+			Controls.Add(NextFirstFileButton);
+			Controls.Add(PrevFirstFileButton);
 			Controls.Add(SettingsButton);
 			Controls.Add(ClearQueueButton);
 			Controls.Add(QueueListBox);
@@ -484,5 +540,9 @@
 		private System.Windows.Forms.Button ClearQueueButton;
 		private System.Windows.Forms.Button SettingsButton;
 		private System.Windows.Forms.ToolTip ToolTip;
+		private System.Windows.Forms.Button PrevFirstFileButton;
+		private System.Windows.Forms.Button NextFirstFileButton;
+		private System.Windows.Forms.Button NextSecondFileButton;
+		private System.Windows.Forms.Button PrevSecondFileButton;
 	}
 }

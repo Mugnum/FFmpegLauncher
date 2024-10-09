@@ -43,9 +43,9 @@ namespace Mugnum.FFmpegLauncher.Entities
 			: base(firstFileParameter, secondFileParameter, outputFileParameter, isClosingOnFinish)
 		{
 			Name = presetName;
-			firstFileParameter = firstFileParameter ?? new InputFileParameter();
-			secondFileParameter = secondFileParameter ?? new InputFileParameter();
-			outputFileParameter = outputFileParameter ?? new OutputFileParameter();
+			firstFileParameter ??= new InputFileParameter();
+			secondFileParameter ??= new InputFileParameter();
+			outputFileParameter ??= new OutputFileParameter();
 			firstFileParameter.FilePath = null;
 			secondFileParameter.FilePath = null;
 			outputFileParameter.FilePath = null;

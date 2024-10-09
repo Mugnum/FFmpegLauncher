@@ -23,7 +23,7 @@ namespace Mugnum.FFmpegLauncher.Entities
 		public List<Preset> Presets
 		{
 			get => _presets;
-			set => _presets = value ?? new List<Preset>();
+			set => _presets = value ?? [];
 		}
 
 		/// <summary>
@@ -66,7 +66,7 @@ namespace Mugnum.FFmpegLauncher.Entities
 		/// </summary>
 		public SettingsConfiguration()
 		{
-			Presets = new List<Preset>();
+			Presets = [];
 		}
 	}
 }

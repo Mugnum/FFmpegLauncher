@@ -398,7 +398,7 @@ namespace Mugnum.FFmpegLauncher.Forms
 		/// </summary>
 		private void BrowseOutputFile()
 		{
-			const string Filter = LauncherConstants.DefaultOutputFileFormats;
+			const string Filter = LauncherConstants.DefaultOutputFileAllFormats;
 			const int FilterGroupItemsCount = 2;
 
 			var outputParams = OutputParameterTextBox.Text;
@@ -501,6 +501,47 @@ namespace Mugnum.FFmpegLauncher.Forms
 			}
 
 			return result;
+		}
+
+		/// <summary>
+		/// Selects previous/next file.
+		/// </summary>
+		/// <param name="targetFileTextBox"> Text box with currently selected file. </param>
+		/// <param name="isNextFile"> Select next file, otherwise - previous file. </param>
+		private static void SelectAdjacentFile(TextBox targetFileTextBox, bool isNextFile)
+		{
+			var targetPath = targetFileTextBox?.Text;
+			if (string.IsNullOrEmpty(targetPath) || string.IsNullOrEmpty(Path.GetExtension(targetPath)))
+			{
+				return;
+			}
+
+			var directoryPath = Path.GetDirectoryName(targetPath);
+			if (string.IsNullOrEmpty(directoryPath) || !Directory.Exists(directoryPath))
+			{
+				return;
+			}
+
+			var extensions = LauncherConstants.AdjacentFileSelectFormats.Split(';');
+			var files = Directory.GetFiles(directoryPath, "*.*", SearchOption.TopDirectoryOnly)
+				.Where(x => extensions.Contains(Path.GetExtension(x)))
+				.OrderBy(x => x)
+				.Select(x => new { FullPath = x, Name = Path.GetFileName(x) })
+				.ToList();
+
+			var currentFileIndex = files.FindIndex(x => x.Name == Path.GetFileName(targetFileTextBox.Text));
+			if (currentFileIndex < 0)
+			{
+				return;
+			}
+
+			var adjacentFilePath = files.ElementAtOrDefault(isNextFile ? currentFileIndex + 1 : currentFileIndex - 1)?.FullPath;
+			if (string.IsNullOrEmpty(adjacentFilePath))
+			{
+				return;
+			}
+
+			targetFileTextBox.Text = adjacentFilePath;
 		}
 
 		#endregion Methods: Private
@@ -759,13 +800,55 @@ namespace Mugnum.FFmpegLauncher.Forms
 		}
 
 		/// <summary>
+		/// Selects previous file in directory for first file.
+		/// </summary>
+		/// <param name="sender"> Event raising object. </param>
+		/// <param name="e"> Event arguments. </param>
+		private void PrevFirstFileButton_Click(object sender, EventArgs e)
+		{
+			SelectAdjacentFile(FirstFilePathTextBox, false);
+			CopyFirstFileNameIfNecessary();
+		}
+
+		/// <summary>
+		/// Selects next file in directory for first file.
+		/// </summary>
+		/// <param name="sender"> Event raising object. </param>
+		/// <param name="e"> Event arguments. </param>
+		private void NextFirstFileButton_Click(object sender, EventArgs e)
+		{
+			SelectAdjacentFile(FirstFilePathTextBox, true);
+			CopyFirstFileNameIfNecessary();
+		}
+
+		/// <summary>
+		/// Selects previous file in directory for second file.
+		/// </summary>
+		/// <param name="sender"> Event raising object. </param>
+		/// <param name="e"> Event arguments. </param>
+		private void PrevSecondFileButton_Click(object sender, EventArgs e)
+		{
+			SelectAdjacentFile(SecondFilePathTextBox, false);
+		}
+
+		/// <summary>
+		/// Selects next file in directory for second file.
+		/// </summary>
+		/// <param name="sender"> Event raising object. </param>
+		/// <param name="e"> Event arguments. </param>
+		private void NextSecondFileButton_Click(object sender, EventArgs e)
+		{
+			SelectAdjacentFile(SecondFilePathTextBox, true);
+		}
+
+		/// <summary>
 		/// Opens dialog for selecting first input file.
 		/// </summary>
 		/// <param name="sender"> Event raising object. </param>
 		/// <param name="e"> Event arguments. </param>
 		private void BrowseFirstFileButton_Click(object sender, EventArgs e)
 		{
-			BrowseInputFile(FirstFilePathTextBox, "Input file #1", LauncherConstants.DefaultInputFileFormats, 1);
+			BrowseInputFile(FirstFilePathTextBox, "Input file #1", LauncherConstants.DefaultInputFileAllFormats, 1);
 			CopyFirstFileNameIfNecessary();
 		}
 
@@ -776,8 +859,7 @@ namespace Mugnum.FFmpegLauncher.Forms
 		/// <param name="e"> Event arguments. </param>
 		private void BrowseSecondFileButton_Click(object sender, EventArgs e)
 		{
-			BrowseInputFile(SecondFilePathTextBox, "Input file #2", LauncherConstants.DefaultInputFileFormats, 1);
-			CopyFirstFileNameIfNecessary();
+			BrowseInputFile(SecondFilePathTextBox, "Input file #2", LauncherConstants.DefaultInputFileAllFormats, 1);
 		}
 
 		/// <summary>

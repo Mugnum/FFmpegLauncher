@@ -38,22 +38,42 @@
 		public const string IgnoreInputFileArgument = "ignore_i";
 
 		/// <summary>
+		/// Macro for skipping adding output filename at the end.
+		/// </summary>
+		public const string IgnoreOutputFileArgument = "no_output";
+
+		/// <summary>
 		/// Macro for preferred output file extension.
 		/// </summary>
 		public const string PreferredFormat = "preferred_format";
+
+		/// <summary>
+		/// Supported file formats for selecting adjacent file.
+		/// </summary>
+		public const string AdjacentFileSelectFormats = ".mp4;.mkv;.mov;.avi;.wmv;.webm;.m4v;.gif;" +
+			".wav;.mp3;.opus;.m4a;.ogg;.flac;.aac;.alac;.ape;.webm;" +
+			".png;.jpg;.bmp;.tiff;.jpeg;.raw;.gif";
 
 		/// <summary>
 		/// Default input file formats.
 		/// </summary>
 		public const string DefaultInputFileFormats = "Video files (MP4, etc.)|*.mp4; *.mkv; *.mov; *.avi; *.wmv; *.webm; *.m4v; *.gif|" +
 			"Audio files (WAV, etc.)|*.wav; *.mp3; *.opus; *.m4a; *.ogg; *.flac; *.aac; *.alac; *.ape; *.webm|" +
-			"Image files (PNG, etc.)|*.png; *.jpg; *.bmp; .tiff; *.jpeg; *.raw; *.gif|" +
-			"All files (*.*)|*.*";
+			"Image files (PNG, etc.)|*.png; *.jpg; *.bmp; .tiff; *.jpeg; *.raw; *.gif";
 
 		/// <summary>
 		/// Default output file formats.
 		/// </summary>
-		public const string DefaultOutputFileFormats = "MP4 file (*.mp4)|*.mp4|MKV file (*.mkv)|*.mkv|" +
-			"PNG file (*.png)|*.png|All files (*.*)|*.*";
+		public const string DefaultOutputFileFormats = "MP4 file (*.mp4)|*.mp4|MKV file (*.mkv)|*.mkv|PNG file (*.png)|*.png";
+
+		/// <summary>
+		/// Default input file formats, including "All files".
+		/// </summary>
+		public const string DefaultInputFileAllFormats = $"{DefaultInputFileFormats}|All files (*.*)|*.*";
+
+		/// <summary>
+		/// Default output file formats, including "All files".
+		/// </summary>
+		public const string DefaultOutputFileAllFormats = $"{DefaultOutputFileFormats}|All files (*.*)|*.*";
 	}
 }

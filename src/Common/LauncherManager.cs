@@ -195,7 +195,8 @@ namespace Mugnum.FFmpegLauncher.Common
 
 			builder.Append($" {outputParams}");
 			var isSkippingOutputPathAutoAppend = string.IsNullOrEmpty(outputFilePath)
-				|| outputParams.Contains($"{{{LauncherConstants.OutputFileName}}}");
+				|| outputParams.Contains($"{{{LauncherConstants.OutputFileName}}}")
+				|| outputParams.Contains($"{{{LauncherConstants.IgnoreOutputFileArgument}}}");
 
 			var cmdText = builder.ToString()
 				.Replace($"{{{LauncherConstants.FirstFileName}}}", $"\"{firstFilePath}\"")
@@ -209,7 +210,8 @@ namespace Mugnum.FFmpegLauncher.Common
 				LauncherConstants.IgnoreInputFileArgument,
 				LauncherConstants.FirstFileName,
 				LauncherConstants.SecondFileName,
-				LauncherConstants.OutputFileName
+				LauncherConstants.OutputFileName,
+				LauncherConstants.IgnoreOutputFileArgument
 			};
 			cmdText = FilterOutKeywords(cmdText, ignoredKeywords);
 
